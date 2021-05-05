@@ -7,36 +7,23 @@ let xz4zaToken;
 let web3js;
 
 
-const startApp = () => {
-    const xz4zaTokenAddress = "123456789";
-    xz4zaToken = new web3js.eth.Contract(myABI, xz4zaTokenAddress);
-}
-
-
-window.addEventListener('load', function() {
-
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof window.web3 !== 'undefined') {
-      // Use Mist/MetaMask's provider
-      web3js = new Web3(window.web3.currentProvider);
-    } else {
-      // Handle the case where the user doesn't have web3. Probably
-      // show them a message telling them to install Metamask in
-      // order to use our app.
-      xz4zaToken = null;
-    }
-    // Now you can start your app & access web3js freely:
-    return web3js && startApp()
-  
-  })
-
-  const getTotalBalanceTokens = () => {
-      return xz4zaToken.metods.totalSupply().call();
+  const getTotalBalanceTokens = async () => {
+      return xz4zaToken.methods.totalSupply().call();
   }
-  const getTotalContractBalance = () => {
-    return xz4zaToken.metods.getBalanceContract();
+  const getTotalContractBalance = async () => {
+    return xz4zaToken.methods.balanceOf('0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7').call()
+  }
+  /*
+  const getUserBalance = async () => {
+      const userAccount = window.web3 //.currentProvider //.eth.accounts[0];
+      const uA = web3js.eth //.accounts[0];
+      const xz = xz4zaToken.eth
+      console.log(userAccount);
+      console.log(uA);
+      console.log(xz)
+      //return xz4zaToken.methods.balanceOf('0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7').call()
   } 
-
+*/
 
 export const Token = () => {
 
@@ -49,13 +36,51 @@ export const Token = () => {
     const [totalBalanceTokens, setTotalBalanceTokens] = useState(null);
     const [totalContractBalance, setTotalContractBalance] = useState(null);
 
+    const startApp = async () => {
+        const xz4zaTokenAddress = "0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7";
+        xz4zaToken = new web3js.eth.Contract(myABI, xz4zaTokenAddress);
+        setTotalBalanceTokens(await getTotalBalanceTokens());
+        setTotalContractBalance(await getTotalContractBalance());
+        //getUserBalance();
+        //console.log(xz4zaToken.methods.totalSupply().call())
+    }
+
+    const initWeb3 = () => {
+        window.addEventListener('load', function() {
+        
+            // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+            if (typeof window.web3 !== 'undefined') {
+              // Use Mist/MetaMask's provider
+              web3js = new Web3(window.web3.currentProvider);
+            } else {
+              // Handle the case where the user doesn't have web3. Probably
+              // show them a message telling them to install Metamask in
+              // order to use our app.
+              xz4zaToken = null;
+            }
+            // Now you can start your app & access web3js freely:
+            console.log(web3js)
+            return web3js && startApp()
+          
+          })
+        
+        }
+
     useEffect(
         () => {
+            initWeb3()
+            /*
             if (!web3js) {
+                console.log(web3js)
+                console.log('puuuufff')
                 return;
             }
+            */
+            /*
             getTotalBalanceTokens().then(setTotalBalanceTokens);
-            getTotalContractBalance().then(setTotalContractBalance);   
+            getTotalContractBalance().then(setTotalContractBalance);
+            */
+           /*   
             let timer = setTimeout( async () => {
               // Check if account has changed
               if (web3js.eth.accounts[0] !== userAccount) {
@@ -66,19 +91,22 @@ export const Token = () => {
             return () => {
                 clearTimeout(timer)
             }
-        },[]
+            */
+        }
+        
+        ,[]
       )
     
     const changeOwner = (e) => {
-        e.prevent.default();
+        //e.prevent.default();
         xz4zaToken.metods.transferOwnership(addressOwner).call();
     };
     const transferTokens = (e) => {
-        e.prevent.default();
+        //e.prevent.default();
         xz4zaToken.metods.transfer(addressTo, amountSubmitXZT).send()
     };
     const changePrice = (e) => {
-        e.prevent.default();
+        //e.prevent.default();
         xz4zaToken.metods.setTokenPrice(priceToken).call();
     };
 
@@ -102,7 +130,7 @@ export const Token = () => {
                     aria-describedby="basic-addon2"
                 />
                 <InputGroup.Append>
-                    <Button variant="outline-secondary">change owner</Button>
+                    <Button onClick={changeOwner} variant="outline-secondary">change owner</Button>
                 </InputGroup.Append>
             </InputGroup>
             <InputGroup className="mb-3">
@@ -122,7 +150,7 @@ export const Token = () => {
                        aria-describedby="basic-addon2"
                     />
                     <InputGroup.Append>
-                        <Button variant="outline-secondary">transfer tokens</Button>
+                        <Button onClick={transferTokens} variant="outline-secondary">transfer tokens</Button>
                     </InputGroup.Append>
             </InputGroup>
             <InputGroup className="mb-3">
@@ -134,7 +162,7 @@ export const Token = () => {
                     aria-describedby="basic-addon2"
                 />
                 <InputGroup.Append>
-                    <Button variant="outline-secondary">change price</Button>
+                    <Button onClick={changePrice} variant="outline-secondary">change price</Button>
                 </InputGroup.Append>
             </InputGroup>
             </div>

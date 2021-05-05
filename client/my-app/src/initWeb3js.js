@@ -1,10 +1,11 @@
+/*
 import web3 from "web3";
 import {myABI} from "./xz4zaTokenABI";
-/*
+
 let xz4zaToken;
 
 const startApp = () => {
-    const xz4zaTokenAddress = "123456789";
+    const xz4zaTokenAddress = "0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7";
     xz4zaToken = new web3js.eth.Contract(myABI, xz4zaTokenAddress);
 }
 
