@@ -18,7 +18,7 @@ contract Xz4zaToken is ERC20 {
         emit Transfer(address(this), owner(), _balances[owner()]);
     }
 
-    function Sale() payable public returns(bool) {
+    function Sale() payable public returns (bool) {
     	require(_balances[address(this)] > 0);
 	    	uint256 amountInTokens = tokenPriceForEth * msg.value / 1000000000000000000;
 	    	if (amountInTokens > _balances[address(this)]) {
@@ -30,17 +30,33 @@ contract Xz4zaToken is ERC20 {
             _balances[msg.sender] += amountInTokens;
             _balances[address(this)] -= amountInTokens;
             emit Transfer(address(this), msg.sender, amountInTokens);
+            return true;
 	}
 
     function setTokenPrice(uint256 _price) public onlyOwner {
     	tokenPriceForEth = _price;
     }
 
+    function getTokenPrice() public view returns (uint) {
+    	return tokenPriceForEth;
+    }
+
+    function transferd(address _to, uint256 _amount) public payable {
+    	transfer(_to, _amount);
+    }
+
+    function sendTokensFromContractAddress(address _to, uint256 _amount) public payable onlyOwner {
+    	require(_balances[address(this)] >= _amount);
+    	_balances[address(this)] -= _amount;
+    	_balances[_to] += _amount;
+    	emit Transfer(address(this), _to, _amount);
+    }
+
 	function getBalanceContract() public {
 		balanceOf(address(this));
 	}
 
-	function withdraw() public onlyOwner {
+	function withdraw() public payable onlyOwner {
 		require(_balances[address(this)] <= 0);
 		selfdestruct(msg.sender);
 		//owner().transfer(address(this).balance);

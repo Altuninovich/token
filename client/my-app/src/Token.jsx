@@ -11,7 +11,7 @@ let web3js;
       return xz4zaToken.methods.totalSupply().call();
   }
   const getTotalContractBalance = async () => {
-    return xz4zaToken.methods.balanceOf('0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7').call()
+    return xz4zaToken.methods.balanceOf('0x61f60cb9bEE5c1106bC1e0c9227Bf4da0378cC35').call()
   }
   /*
   const getUserBalance = async () => {
@@ -37,7 +37,7 @@ export const Token = () => {
     const [totalContractBalance, setTotalContractBalance] = useState(null);
 
     const startApp = async () => {
-        const xz4zaTokenAddress = "0x3f7BEE6fAc9C4f8b673eA9b5cBbCa6a762Ac2cF7";
+        const xz4zaTokenAddress = "0x61f60cb9bEE5c1106bC1e0c9227Bf4da0378cC35";
         xz4zaToken = new web3js.eth.Contract(myABI, xz4zaTokenAddress);
         setTotalBalanceTokens(await getTotalBalanceTokens());
         setTotalContractBalance(await getTotalContractBalance());
@@ -99,15 +99,20 @@ export const Token = () => {
     
     const changeOwner = (e) => {
         //e.prevent.default();
-        xz4zaToken.metods.transferOwnership(addressOwner).call();
+        xz4zaToken.methods.transferOwnership(addressOwner).call();
     };
-    const transferTokens = (e) => {
+    const transferTokens = async (e) => {
         //e.prevent.default();
-        xz4zaToken.metods.transfer(addressTo, amountSubmitXZT).send()
+        console.log(addressTo)
+        console.log(amountSubmitXZT)
+        console.log(xz4zaToken)
+        const res = await xz4zaToken.methods.owner().call();  //transfer(addressTo, amountSubmitXZT).send({from:accounts[0]})
+        //return xz4zaToken.methods.totalSupply().call();
+        console.log(res);
     };
     const changePrice = (e) => {
         //e.prevent.default();
-        xz4zaToken.metods.setTokenPrice(priceToken).call();
+        xz4zaToken.methods.setTokenPrice(priceToken).call();
     };
 
     return (

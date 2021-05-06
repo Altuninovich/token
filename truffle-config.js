@@ -3,7 +3,7 @@ const HDWalletProvider = require("truffle-hdwallet-provider");
 // 1. Initialize LoomTruffleProvider
 
 // Set your own mnemonic here
-const mnemonic = "xxx";
+const mnemonic = "gogi";
 
 module.exports = {
  networks: {
